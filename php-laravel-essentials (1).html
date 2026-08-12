@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PHP & Laravel Essentials — Junior Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0e0c17;
+    --bg-elev: #161320;
+    --card: #1a1728;
+    --card-hover: #201c30;
+    --border: #2c2740;
+    --border-soft: #23202f;
+    --text: #ece9f5;
+    --text-dim: #9891ad;
+    --text-faint: #6b6480;
+    --php: #8892d8;
+    --php-soft: rgba(136,146,216,0.12);
+    --laravel: #ff5b45;
+    --laravel-soft: rgba(255,91,69,0.13);
+    --stage1: #8892d8;
+    --stage2: #c084e8;
+    --stage2-soft: rgba(192,132,232,0.12);
+    --stage3: #ff5b45;
+    --radius: 14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -5%, rgba(136,146,216,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 85% 0%, rgba(255,91,69,0.08), transparent 60%);
+    color: var(--text);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    padding-bottom: 80px;
+  }
+  .wrap{ max-width:1400px; margin:0 auto; padding: 0 28px; }
+
+  /* HEADER */
+  header{ padding: 56px 28px 36px; text-align:center; position:relative; }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; letter-spacing:0.14em; text-transform:uppercase;
+    color: var(--text-faint); margin-bottom:18px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .eyebrow .dot{ width:6px; height:6px; border-radius:50%; background: var(--laravel); box-shadow:0 0 10px var(--laravel); }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size: clamp(32px, 5.4vw, 58px);
+    line-height:1.05;
+    letter-spacing:-0.02em;
+    max-width: 900px;
+    margin: 0 auto 16px;
+  }
+  h1 .accent-php{ color: var(--php); }
+  h1 .accent-laravel{ color: var(--laravel); }
+  .sub{
+    color: var(--text-dim);
+    font-size:16px;
+    max-width:560px;
+    margin: 0 auto 34px;
+    line-height:1.6;
+  }
+
+  .stats-row{
+    display:flex; justify-content:center; gap:0;
+    flex-wrap:wrap;
+    max-width:640px;
+    margin: 0 auto 40px;
+    border:1px solid var(--border-soft);
+    border-radius: 12px;
+    overflow:hidden;
+    background: var(--bg-elev);
+  }
+  .stat{
+    flex:1; min-width:130px;
+    padding:16px 12px;
+    text-align:center;
+    border-right:1px solid var(--border-soft);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:22px; color:var(--text); }
+  .stat .lbl{ font-family:'JetBrains Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-faint); margin-top:4px; }
+
+  /* CONTROLS */
+  .controls{
+    max-width: 900px; margin: 0 auto 8px;
+    display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+    justify-content:center;
+  }
+  .search-box{
+    flex:1; min-width:260px; max-width:440px;
+    position:relative;
+  }
+  .search-box input{
+    width:100%;
+    background: var(--bg-elev);
+    border:1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px 12px 40px;
+    border-radius:10px;
+    font-family:'Inter', sans-serif;
+    font-size:14.5px;
+    outline:none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .search-box input:focus{ border-color: var(--php); box-shadow: 0 0 0 3px var(--php-soft); }
+  .search-box::before{
+    content:"⌕";
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    color: var(--text-faint); font-size:17px; pointer-events:none;
+  }
+  .btn{
+    background: var(--bg-elev);
+    border:1px solid var(--border);
+    color: var(--text-dim);
+    padding: 11px 18px;
+    border-radius:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:0.03em;
+    cursor:pointer;
+    transition: all .15s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{ color:var(--text); border-color: var(--text-faint); background: var(--card-hover); }
+  .match-count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    color:var(--text-faint);
+    min-height:16px;
+    text-align:center;
+    margin: 10px 0 30px;
+  }
+  .match-count b{ color: var(--laravel); }
+
+  .overall-progress{
+    max-width:900px; margin: 22px auto 0;
+    display:flex; align-items:center; gap:14px;
+  }
+  .overall-progress .bar{
+    flex:1; height:8px; border-radius:20px;
+    background: var(--bg-elev);
+    border:1px solid var(--border-soft);
+    overflow:hidden;
+  }
+  .overall-progress .bar-fill{
+    height:100%;
+    width:0%;
+    background: linear-gradient(90deg, var(--php), var(--laravel));
+    transition: width .35s ease;
+  }
+  .overall-progress .pct{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px; color: var(--text-dim);
+    white-space:nowrap; min-width:110px; text-align:right;
+  }
+  .overall-progress .pct b{ color: var(--text); }
+
+  /* STAGE HEADERS */
+  .stage{
+    margin-bottom: 54px;
+  }
+  .stage-head{
+    display:flex; align-items:baseline; gap:16px;
+    margin-bottom: 22px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .stage-num{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color: var(--bg);
+    background: var(--stage-color, var(--php));
+    width:28px; height:28px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .stage-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:21px; }
+  .stage-desc{ color:var(--text-faint); font-size:13px; margin-left:auto; text-align:right; font-family:'JetBrains Mono', monospace; }
+
+  .branch-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap:16px;
+  }
+
+  /* BRANCH CARD */
+  .branch{
+    background: var(--card);
+    border:1px solid var(--border-soft);
+    border-radius: var(--radius);
+    overflow:hidden;
+    transition: border-color .2s ease;
+    align-self:start;
+  }
+  .branch:hover{ border-color: var(--border); }
+  .branch-head{
+    display:flex; align-items:center; gap:12px;
+    padding: 16px 18px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .branch-head .chev{
+    width:16px; height:16px; flex-shrink:0;
+    color: var(--text-faint);
+    transition: transform .2s ease;
+  }
+  .branch.open .branch-head .chev{ transform: rotate(90deg); }
+  .branch-head .icon{
+    width:8px; height:8px; border-radius:2px;
+    background: var(--stage-color, var(--php));
+    flex-shrink:0;
+    transform: rotate(45deg);
+  }
+  .branch-head .name{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:15.5px;
+    flex:1;
+  }
+  .branch-head .count{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    color: var(--text-faint);
+    background: var(--bg-elev);
+    padding:2px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+    transition: color .15s ease;
+  }
+  .branch-head .count.complete{ color: var(--stage-color, var(--php)); }
+  .branch-progress{
+    height:3px;
+    background: var(--border-soft);
+    position:relative;
+    overflow:hidden;
+  }
+  .branch-progress-fill{
+    height:100%;
+    background: var(--stage-color, var(--php));
+    width:0%;
+    transition: width .3s ease;
+  }
+  .branch-body{
+    max-height:0;
+    overflow:hidden;
+    transition: max-height .28s ease;
+  }
+  .branch.open .branch-body{ max-height: 4000px; transition: max-height .5s ease; }
+  .branch-inner{ padding: 0 18px 18px 18px; }
+
+  /* NESTED TREE */
+  ul.tree{ list-style:none; }
+  ul.tree ul.tree{
+    margin-left: 14px;
+    padding-left: 14px;
+    border-left: 1px dashed var(--border);
+    margin-top:2px;
+  }
+  .node{ margin: 2px 0; }
+  .node-row{
+    display:flex; align-items:center; gap:8px;
+    padding: 5px 8px;
+    border-radius:6px;
+    cursor:default;
+    font-size:13.5px;
+    color: var(--text-dim);
+    transition: background .12s ease, color .12s ease;
+  }
+  .node-row.has-children{ cursor:pointer; color: var(--text); font-weight:500; }
+  .node-row:hover{ background: var(--bg-elev); color: var(--text); }
+  .node-row .twisty{
+    width:12px; flex-shrink:0; text-align:center;
+    color: var(--text-faint); font-size:10px;
+    transition: transform .15s ease;
+  }
+  .node.open > .node-row .twisty{ transform: rotate(90deg); }
+  .node-row .leaf-dot{
+    width:5px; height:5px; border-radius:50%;
+    background: var(--border); flex-shrink:0;
+  }
+  .node-row.done{ color: var(--text-faint); }
+  .node-row.done .label{ text-decoration: line-through; text-decoration-color: var(--border); }
+  .node-row.done code.inline{ opacity:0.55; }
+
+  .chk{
+    width:15px; height:15px; flex-shrink:0;
+    border:1.5px solid var(--border);
+    border-radius:4px;
+    background: var(--bg-elev);
+    cursor:pointer;
+    position:relative;
+    transition: all .12s ease;
+  }
+  .chk:hover{ border-color: var(--text-faint); }
+  .chk.checked{ background: var(--stage-color, var(--php)); border-color: var(--stage-color, var(--php)); }
+  .chk.checked::after{
+    content:"";
+    position:absolute; left:4px; top:1px;
+    width:4px; height:8px;
+    border:solid var(--bg);
+    border-width:0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .chk.indeterminate{ background: transparent; border-color: var(--stage-color, var(--php)); }
+  .chk.indeterminate::after{
+    content:"";
+    position:absolute; left:3px; top:6px;
+    width:7px; height:2px;
+    background: var(--stage-color, var(--php));
+    border:none;
+  }
+  .node > ul.tree{ max-height:0; overflow:hidden; transition: max-height .25s ease; }
+  .node.open > ul.tree{ max-height:2000px; }
+  code.inline{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12.5px;
+    color: var(--laravel);
+  }
+  mark{
+    background: var(--laravel-soft);
+    color: var(--laravel);
+    border-radius:3px;
+    padding: 0 2px;
+  }
+  .node-row.dimmed{ opacity:0.25; }
+  .branch.filter-hidden{ display:none; }
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    padding-top:28px;
+    border-top:1px solid var(--border-soft);
+    color: var(--text-faint);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.03em;
+  }
+
+  @media (max-width: 640px){
+    header{ padding: 40px 18px 24px; }
+    .wrap{ padding:0 16px; }
+    .stage-desc{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow"><span class="dot"></span> JUNIOR REFERENCE &middot; MUST-KNOW ESSENTIALS</div>
+  <h1><span class="accent-php">PHP</span> &amp; <span class="accent-laravel">Laravel</span><br>Essentials</h1>
+  <p class="sub">The core PHP, OOP, and Laravel topics a junior backend dev needs to know — no fluff, no advanced scaling/architecture. Tick a topic when you finish it — your progress is saved automatically in this file.</p>
+  <div class="stats-row" id="statsRow"></div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search topics — e.g. eager loading, PSR-4, rate limiting..." autocomplete="off">
+    </div>
+    <button class="btn" id="expandAllBtn">EXPAND ALL</button>
+    <button class="btn" id="collapseAllBtn">COLLAPSE ALL</button>
+    <button class="btn" id="resetBtn" style="color:var(--laravel); border-color:rgba(255,91,69,0.3);">RESET PROGRESS</button>
+  </div>
+  <div class="overall-progress" id="overallProgress"></div>
+  <div class="match-count" id="matchCount"></div>
+
+  <div id="stages"></div>
+
+  <footer>PHP &amp; Laravel Essentials &middot; generated for Momen</footer>
+</div>
+
+<script>
+const DATA = {"name": "PHP & Laravel Essentials Roadmap", "children": [{"name": "PHP Fundamentals", "children": [{"name": "Variables & Data Types", "children": [{"name": "Variables", "children": []}, {"name": "Constants", "children": []}, {"name": "Strings", "children": []}, {"name": "Integers", "children": []}, {"name": "Floats", "children": []}, {"name": "Booleans", "children": []}, {"name": "Arrays", "children": []}, {"name": "Objects", "children": []}, {"name": "NULL", "children": []}, {"name": "Type Casting", "children": []}]}, {"name": "Operators", "children": [{"name": "Arithmetic Operators", "children": []}, {"name": "Assignment Operators", "children": []}, {"name": "Comparison Operators", "children": [{"name": "==", "children": []}, {"name": "===", "children": []}, {"name": "!=", "children": []}, {"name": "!==", "children": []}]}, {"name": "Logical Operators", "children": [{"name": "&&", "children": []}, {"name": "||", "children": []}, {"name": "!", "children": []}]}, {"name": "Null Coalescing", "children": []}, {"name": "Ternary Operator", "children": []}]}, {"name": "Conditions", "children": [{"name": "if", "children": []}, {"name": "elseif", "children": []}, {"name": "else", "children": []}, {"name": "switch", "children": []}, {"name": "match", "children": []}]}, {"name": "Loops", "children": [{"name": "for", "children": []}, {"name": "while", "children": []}, {"name": "do while", "children": []}, {"name": "foreach", "children": []}, {"name": "break", "children": []}, {"name": "continue", "children": []}]}, {"name": "Functions", "children": [{"name": "Parameters", "children": []}, {"name": "Arguments", "children": []}, {"name": "Return Values", "children": []}, {"name": "Default Parameters", "children": []}, {"name": "Type Declarations", "children": []}, {"name": "Return Types", "children": []}, {"name": "Variadic Functions", "children": []}, {"name": "Anonymous Functions", "children": []}, {"name": "Arrow Functions", "children": []}]}, {"name": "Scope", "children": [{"name": "Local Scope", "children": []}, {"name": "Global Scope", "children": []}, {"name": "Function Scope", "children": []}, {"name": "Static Variables", "children": []}, {"name": "Class Scope", "children": []}]}, {"name": "Arrays", "children": [{"name": "Indexed Arrays", "children": []}, {"name": "Associative Arrays", "children": []}, {"name": "Multidimensional Arrays", "children": []}, {"name": "array_map", "children": []}, {"name": "array_filter", "children": []}, {"name": "array_reduce", "children": []}, {"name": "array_merge", "children": []}, {"name": "array_search", "children": []}, {"name": "in_array", "children": []}, {"name": "sort", "children": []}, {"name": "usort", "children": []}]}, {"name": "Error Handling", "children": [{"name": "Errors", "children": []}, {"name": "Exceptions", "children": []}, {"name": "try", "children": []}, {"name": "catch", "children": []}, {"name": "finally", "children": []}, {"name": "throw", "children": []}]}]}, {"name": "PHP OOP", "children": [{"name": "Classes & Objects", "children": [{"name": "Classes", "children": []}, {"name": "Objects", "children": []}, {"name": "Properties", "children": []}, {"name": "Methods", "children": []}, {"name": "Constructor", "children": []}]}, {"name": "Encapsulation", "children": [{"name": "public", "children": []}, {"name": "private", "children": []}, {"name": "protected", "children": []}, {"name": "Getters", "children": []}, {"name": "Setters", "children": []}]}, {"name": "Inheritance", "children": [{"name": "extends", "children": []}, {"name": "parent", "children": []}, {"name": "Method Overriding", "children": []}, {"name": "final", "children": []}]}, {"name": "Polymorphism", "children": [{"name": "Method Overriding", "children": []}, {"name": "Interface Based Polymorphism", "children": []}, {"name": "Dependency Substitution", "children": []}]}, {"name": "Abstraction", "children": [{"name": "abstract class", "children": []}, {"name": "abstract method", "children": []}]}, {"name": "Interfaces", "children": [{"name": "interface", "children": []}, {"name": "implements", "children": []}, {"name": "Multiple Interfaces", "children": []}]}, {"name": "Traits", "children": [{"name": "use", "children": []}, {"name": "Reusing Methods", "children": []}, {"name": "Trait Conflicts", "children": []}]}, {"name": "Static", "children": [{"name": "Static Properties", "children": []}, {"name": "Static Methods", "children": []}]}, {"name": "Namespaces", "children": [{"name": "namespace", "children": []}, {"name": "use", "children": []}, {"name": "Fully Qualified Class Name", "children": []}]}, {"name": "Advanced OOP", "children": [{"name": "Dependency Injection", "children": []}, {"name": "Composition", "children": []}, {"name": "Composition vs Inheritance", "children": []}, {"name": "SOLID", "children": []}]}]}, {"name": "Laravel Fundamentals", "children": [{"name": "Project Structure", "children": [{"name": "app", "children": []}, {"name": "config", "children": []}, {"name": "database", "children": []}, {"name": "resources", "children": []}, {"name": "routes", "children": []}, {"name": "storage", "children": []}, {"name": "public", "children": []}]}, {"name": "MVC", "children": [{"name": "Model", "children": []}, {"name": "View", "children": []}, {"name": "Controller", "children": []}, {"name": "Request Flow", "children": []}]}, {"name": "Configuration", "children": [{"name": ".env", "children": []}, {"name": "config", "children": []}, {"name": "Environment Variables", "children": []}, {"name": "Config Cache", "children": []}]}, {"name": "Routing", "children": [{"name": "GET", "children": []}, {"name": "POST", "children": []}, {"name": "PUT", "children": []}, {"name": "PATCH", "children": []}, {"name": "DELETE", "children": []}, {"name": "Route Parameters", "children": []}, {"name": "Named Routes", "children": []}, {"name": "Route Groups", "children": []}, {"name": "Prefix", "children": []}, {"name": "Middleware", "children": []}, {"name": "Resource Routes", "children": []}]}, {"name": "Controllers", "children": [{"name": "Resource Controller", "children": []}, {"name": "Single Action Controller", "children": []}, {"name": "Dependency Injection", "children": []}]}, {"name": "Requests", "children": [{"name": "Request Object", "children": []}, {"name": "Input", "children": []}, {"name": "Query", "children": []}, {"name": "Headers", "children": []}, {"name": "Files", "children": []}]}, {"name": "Responses", "children": [{"name": "View", "children": []}, {"name": "JSON", "children": []}, {"name": "Redirect", "children": []}, {"name": "Download", "children": []}, {"name": "Status Codes", "children": []}]}, {"name": "Blade", "children": [{"name": "Variables", "children": []}, {"name": "Conditions", "children": []}, {"name": "Loops", "children": []}, {"name": "Layouts", "children": []}, {"name": "Components", "children": []}, {"name": "Includes", "children": []}, {"name": "Forms", "children": []}]}]}, {"name": "Eloquent & Database", "children": [{"name": "Models", "children": [{"name": "Model Creation", "children": []}, {"name": "Attributes", "children": []}, {"name": "Mass Assignment", "children": [{"name": "$fillable", "children": []}, {"name": "$guarded", "children": []}]}, {"name": "Casts", "children": []}, {"name": "Accessors", "children": []}, {"name": "Mutators", "children": []}]}, {"name": "CRUD", "children": [{"name": "create", "children": []}, {"name": "find", "children": []}, {"name": "findOrFail", "children": []}, {"name": "update", "children": []}, {"name": "delete", "children": []}, {"name": "restore", "children": []}]}, {"name": "Query Builder", "children": [{"name": "where", "children": []}, {"name": "orWhere", "children": []}, {"name": "whereIn", "children": []}, {"name": "whereBetween", "children": []}, {"name": "orderBy", "children": []}, {"name": "groupBy", "children": []}, {"name": "limit", "children": []}, {"name": "Pagination", "children": []}]}, {"name": "Relationships", "children": [{"name": "hasOne", "children": []}, {"name": "belongsTo", "children": []}, {"name": "hasMany", "children": []}, {"name": "belongsToMany", "children": []}, {"name": "hasManyThrough", "children": []}, {"name": "Polymorphic Relationships", "children": []}]}, {"name": "Relationship Loading", "children": [{"name": "Lazy Loading", "children": []}, {"name": "Eager Loading", "children": []}, {"name": "with()", "children": []}, {"name": "load()", "children": []}, {"name": "N+1 Problem", "children": []}]}, {"name": "Scopes", "children": [{"name": "Local Scopes", "children": []}, {"name": "Global Scopes", "children": []}]}, {"name": "Database Tools", "children": [{"name": "Migrations", "children": []}, {"name": "Seeders", "children": []}, {"name": "Factories", "children": []}, {"name": "Transactions", "children": []}]}]}, {"name": "Laravel Application Layer", "children": [{"name": "Validation", "children": [{"name": "validate()", "children": []}, {"name": "Validation Rules", "children": []}, {"name": "Custom Rules", "children": []}, {"name": "Form Requests", "children": []}]}, {"name": "Middleware", "children": [{"name": "Global Middleware", "children": []}, {"name": "Route Middleware", "children": []}, {"name": "Authentication Middleware", "children": []}, {"name": "Custom Middleware", "children": []}]}, {"name": "Services", "children": [{"name": "What Is Service", "children": []}, {"name": "Business Logic", "children": []}, {"name": "Service Class", "children": []}, {"name": "Service Dependencies", "children": []}]}, {"name": "Service Container", "children": [{"name": "Binding", "children": []}, {"name": "Singleton", "children": []}, {"name": "Resolution", "children": []}, {"name": "Dependency Injection", "children": []}]}, {"name": "Contracts", "children": [{"name": "Interfaces", "children": []}, {"name": "Bindings", "children": []}, {"name": "Implementations", "children": []}]}, {"name": "Exceptions", "children": [{"name": "Custom Exceptions", "children": []}, {"name": "Exception Handler", "children": []}, {"name": "API Errors", "children": []}, {"name": "Error Responses", "children": []}]}]}, {"name": "Authentication & Authorization", "children": [{"name": "Authentication", "children": [{"name": "Login", "children": []}, {"name": "Logout", "children": []}, {"name": "Password Hashing", "children": []}, {"name": "Password Reset", "children": []}, {"name": "Email Verification", "children": []}]}, {"name": "Session Authentication", "children": [{"name": "Session", "children": []}, {"name": "Cookies", "children": []}, {"name": "Remember Me", "children": []}]}, {"name": "API Authentication", "children": [{"name": "Tokens", "children": []}, {"name": "Sanctum", "children": []}, {"name": "Token Abilities", "children": []}]}, {"name": "Authorization", "children": [{"name": "Gates", "children": [{"name": "Define", "children": []}, {"name": "Check", "children": []}, {"name": "Authorize", "children": []}]}, {"name": "Policies", "children": [{"name": "View", "children": []}, {"name": "Create", "children": []}, {"name": "Update", "children": []}, {"name": "Delete", "children": []}]}, {"name": "Roles & Permissions", "children": [{"name": "Roles", "children": []}, {"name": "Permissions", "children": []}, {"name": "Role Assignment", "children": []}, {"name": "Permission Checking", "children": []}]}]}]}, {"name": "REST API", "children": [{"name": "API Fundamentals", "children": [{"name": "REST", "children": []}, {"name": "Resources", "children": []}, {"name": "Endpoints", "children": []}, {"name": "HTTP Methods", "children": []}, {"name": "Status Codes", "children": []}]}, {"name": "API Response", "children": [{"name": "JSON", "children": []}, {"name": "Consistent Structure", "children": []}, {"name": "Success Response", "children": []}, {"name": "Error Response", "children": []}]}, {"name": "API Resources", "children": [{"name": "Resource", "children": []}, {"name": "Resource Collection", "children": []}, {"name": "Relationships", "children": []}, {"name": "Conditional Fields", "children": []}]}, {"name": "Validation", "children": [{"name": "Form Requests", "children": []}, {"name": "Error Format", "children": []}, {"name": "Validation Messages", "children": []}]}, {"name": "Pagination", "children": [{"name": "Page", "children": []}, {"name": "Per Page", "children": []}, {"name": "Meta", "children": []}, {"name": "Links", "children": []}, {"name": "Cursor Pagination", "children": []}]}, {"name": "Filtering", "children": [{"name": "Search", "children": []}, {"name": "Filters", "children": []}, {"name": "Query Parameters", "children": []}]}, {"name": "Sorting", "children": [{"name": "Sort By", "children": []}, {"name": "Ascending", "children": []}, {"name": "Descending", "children": []}]}, {"name": "API Versioning", "children": [{"name": "v1", "children": []}, {"name": "v2", "children": []}, {"name": "Backward Compatibility", "children": []}]}]}]}
+;
+
+// Group top-level branches into meaningful learning stages
+const STAGES = [
+  {
+    title: "PHP Foundations",
+    desc: "core PHP + OOP",
+    color: "var(--stage1)",
+    branches: ["PHP Fundamentals", "PHP OOP"]
+  },
+  {
+    title: "Laravel Essentials",
+    desc: "the framework, must-knows",
+    color: "var(--stage2)",
+    branches: ["Laravel Fundamentals", "Eloquent & Database", "Laravel Application Layer", "Authentication & Authorization", "REST API"]
+  }
+];
+
+function countNodes(n){
+  let c = 1;
+  for(const ch of n.children) c += countNodes(ch);
+  return c;
+}
+
+const branchByName = {};
+DATA.children.forEach(b => branchByName[b.name] = b);
+
+const totalTopics = countNodes(DATA) - 1; // exclude root
+const totalBranches = DATA.children.length;
+
+// ---- PROGRESS TRACKING (persisted in localStorage) ----
+const STORAGE_KEY = 'phpLaravelEssentialsProgress_v1';
+let checkedIds = new Set();
+try{
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  checkedIds = new Set(saved);
+}catch(e){ checkedIds = new Set(); }
+
+function saveProgress(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(checkedIds))); }
+  catch(e){ /* storage unavailable, progress won't persist */ }
+}
+
+// stats row
+const statsRow = document.getElementById('statsRow');
+[
+  [totalBranches, "Branches"],
+  [totalTopics, "Total Topics"],
+  [STAGES.length, "Stages"],
+].forEach(([num,lbl]) => {
+  const d = document.createElement('div');
+  d.className = 'stat';
+  d.innerHTML = `<div class="num">${num}</div><div class="lbl">${lbl}</div>`;
+  statsRow.appendChild(d);
+});
+
+function isCodeLike(name){
+  return /[(){}$_]|^[A-Z_]+$|::/.test(name) && name.length < 30 && !/ /.test(name.replace(/[()]/g,''));
+}
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function makeId(path){
+  return path.join('␟');
+}
+
+function renderNode(node, path){
+  const nodePath = path.concat([node.name]);
+  const id = makeId(nodePath);
+
+  const li = document.createElement('li');
+  li.className = 'node';
+  const hasChildren = node.children && node.children.length > 0;
+
+  const row = document.createElement('div');
+  row.className = 'node-row' + (hasChildren ? ' has-children' : '');
+  row.dataset.name = node.name.toLowerCase();
+  row.dataset.id = id;
+
+  // checkbox
+  const chk = document.createElement('span');
+  chk.className = 'chk';
+  const isDone = checkedIds.has(id);
+  if(isDone){ chk.classList.add('checked'); row.classList.add('done'); }
+  chk.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if(checkedIds.has(id)){
+      checkedIds.delete(id);
+      chk.classList.remove('checked');
+      row.classList.remove('done');
+    } else {
+      checkedIds.add(id);
+      chk.classList.add('checked');
+      row.classList.add('done');
+    }
+    saveProgress();
+    updateAllProgress();
+  });
+  row.appendChild(chk);
+
+  const twisty = document.createElement('span');
+  twisty.className = 'twisty';
+  twisty.textContent = hasChildren ? '▸' : '';
+  if(!hasChildren){
+    twisty.innerHTML = '';
+    const dot = document.createElement('span');
+    dot.className = 'leaf-dot';
+    row.appendChild(dot);
+  } else {
+    row.appendChild(twisty);
+  }
+
+  const label = document.createElement('span');
+  label.className = 'label';
+  const codeLike = isCodeLike(node.name);
+  if(codeLike){
+    label.innerHTML = `<code class="inline">${escapeHtml(node.name)}</code>`;
+  } else {
+    label.textContent = node.name;
+  }
+  row.appendChild(label);
+  li.appendChild(row);
+
+  if(hasChildren){
+    const ul = document.createElement('ul');
+    ul.className = 'tree';
+    node.children.forEach(ch => ul.appendChild(renderNode(ch, nodePath)));
+    li.appendChild(ul);
+
+    row.addEventListener('click', (e) => {
+      if(e.target === chk) return;
+      li.classList.toggle('open');
+    });
+  }
+
+  return li;
+}
+
+function renderBranch(branchData, stageColor){
+  const branch = document.createElement('div');
+  branch.className = 'branch';
+  branch.dataset.name = branchData.name.toLowerCase();
+  branch.style.setProperty('--stage-color', stageColor);
+
+  const total = countNodes(branchData) - 1;
+
+  const head = document.createElement('div');
+  head.className = 'branch-head';
+  head.innerHTML = `
+    <svg class="chev" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="icon"></span>
+    <span class="name">${branchData.name}</span>
+    <span class="count" data-total="${total}">0/${total}</span>
+  `;
+  head.addEventListener('click', () => branch.classList.toggle('open'));
+
+  const progressBar = document.createElement('div');
+  progressBar.className = 'branch-progress';
+  progressBar.innerHTML = `<div class="branch-progress-fill"></div>`;
+
+  const body = document.createElement('div');
+  body.className = 'branch-body';
+  const inner = document.createElement('div');
+  inner.className = 'branch-inner';
+  const ul = document.createElement('ul');
+  ul.className = 'tree';
+  branchData.children.forEach(ch => ul.appendChild(renderNode(ch, [branchData.name])));
+  inner.appendChild(ul);
+  body.appendChild(inner);
+
+  branch.appendChild(head);
+  branch.appendChild(progressBar);
+  branch.appendChild(body);
+  return branch;
+}
+
+const stagesContainer = document.getElementById('stages');
+STAGES.forEach((stage, i) => {
+  const section = document.createElement('div');
+  section.className = 'stage';
+
+  const stageHead = document.createElement('div');
+  stageHead.className = 'stage-head';
+  stageHead.innerHTML = `
+    <span class="stage-num" style="--stage-color:${stage.color}; background:${stage.color};">${i+1}</span>
+    <span class="stage-title">${stage.title}</span>
+    <span class="stage-desc">${stage.desc}</span>
+  `;
+  section.appendChild(stageHead);
+
+  const grid = document.createElement('div');
+  grid.className = 'branch-grid';
+  stage.branches.forEach(bname => {
+    const bdata = branchByName[bname];
+    if(bdata){
+      grid.appendChild(renderBranch(bdata, stage.color));
+    }
+  });
+  section.appendChild(grid);
+  stagesContainer.appendChild(section);
+});
+
+// ---- PROGRESS UPDATES ----
+function updateAllProgress(){
+  document.querySelectorAll('.branch').forEach(branch => {
+    const rows = branch.querySelectorAll('.node-row');
+    const total = rows.length;
+    const done = branch.querySelectorAll('.node-row.done').length;
+    const countEl = branch.querySelector('.count');
+    countEl.textContent = `${done}/${total}`;
+    countEl.classList.toggle('complete', total > 0 && done === total);
+    const fill = branch.querySelector('.branch-progress-fill');
+    fill.style.width = total > 0 ? `${(done/total)*100}%` : '0%';
+  });
+
+  const overallDone = document.querySelectorAll('.node-row.done').length;
+  const pct = totalTopics > 0 ? Math.round((overallDone/totalTopics)*100) : 0;
+  const overallEl = document.getElementById('overallProgress');
+  overallEl.innerHTML = `
+    <div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <div class="pct"><b>${overallDone}</b> / ${totalTopics} &middot; ${pct}%</div>
+  `;
+}
+updateAllProgress();
+
+// RESET PROGRESS
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(!confirm('Reset all progress? This clears every checked topic.')) return;
+  checkedIds.clear();
+  saveProgress();
+  document.querySelectorAll('.chk.checked').forEach(c => c.classList.remove('checked'));
+  document.querySelectorAll('.node-row.done').forEach(r => r.classList.remove('done'));
+  updateAllProgress();
+});
+
+// EXPAND / COLLAPSE ALL
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.branch').forEach(b => b.classList.add('open'));
+  document.querySelectorAll('.node').forEach(n => n.classList.add('open'));
+});
+document.getElementById('collapseAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.branch').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.node').forEach(n => n.classList.remove('open'));
+});
+
+// SEARCH
+const searchInput = document.getElementById('searchInput');
+const matchCount = document.getElementById('matchCount');
+
+function clearHighlights(){
+  document.querySelectorAll('mark').forEach(m => {
+    const parent = m.parentNode;
+    parent.replaceChild(document.createTextNode(m.textContent), m);
+    parent.normalize();
+  });
+}
+
+function highlightText(el, query){
+  // el is the label span; only plain text nodes (skip code labels safely by re-rendering)
+  const original = el.dataset.orig || el.textContent;
+  el.dataset.orig = original;
+  const idx = original.toLowerCase().indexOf(query);
+  if(idx === -1){ el.textContent = original; return; }
+  const before = original.slice(0, idx);
+  const match = original.slice(idx, idx + query.length);
+  const after = original.slice(idx + query.length);
+  el.innerHTML = '';
+  el.appendChild(document.createTextNode(before));
+  const mark = document.createElement('mark');
+  mark.textContent = match;
+  el.appendChild(mark);
+  el.appendChild(document.createTextNode(after));
+}
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  const allBranches = document.querySelectorAll('.branch');
+
+  if(!q){
+    matchCount.textContent = '';
+    allBranches.forEach(b => {
+      b.classList.remove('filter-hidden');
+      b.classList.remove('open');
+    });
+    document.querySelectorAll('.node-row').forEach(r => {
+      r.classList.remove('dimmed');
+      const label = r.querySelector('.label');
+      if(label && label.dataset.orig){ label.textContent = label.dataset.orig; }
+    });
+    document.querySelectorAll('.node').forEach(n => n.classList.remove('open'));
+    return;
+  }
+
+  let matches = 0;
+
+  allBranches.forEach(branch => {
+    let branchHasMatch = false;
+    const rows = branch.querySelectorAll('.node-row');
+    rows.forEach(row => {
+      const name = row.dataset.name || '';
+      const label = row.querySelector('.label');
+      const isMatch = name.includes(q);
+      if(isMatch){
+        matches++;
+        branchHasMatch = true;
+        row.classList.remove('dimmed');
+        if(label) highlightText(label, q);
+        // open ancestors
+        let node = row.closest('.node');
+        while(node){
+          node.classList.add('open');
+          const parentUl = node.parentElement;
+          node = parentUl ? parentUl.closest('.node') : null;
+        }
+      } else {
+        row.classList.add('dimmed');
+        if(label && label.dataset.orig){ label.textContent = label.dataset.orig; }
+      }
+    });
+
+    // also check branch title itself
+    const branchNameMatch = (branch.dataset.name || '').includes(q);
+    if(branchNameMatch) branchHasMatch = true;
+
+    if(branchHasMatch){
+      branch.classList.remove('filter-hidden');
+      branch.classList.add('open');
+    } else {
+      branch.classList.add('filter-hidden');
+    }
+  });
+
+  matchCount.innerHTML = matches > 0
+    ? `<b>${matches}</b> topic${matches===1?'':'s'} matched`
+    : `no topics matched "${escapeHtml(searchInput.value)}"`;
+});
+</script>
+</body>
+</html>
