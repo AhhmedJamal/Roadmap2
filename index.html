@@ -118,6 +118,13 @@
     position:absolute; left:14px; top:50%; transform:translateY(-50%);
     color: var(--text-faint); font-size:17px; pointer-events:none;
   }
+  .btn-two{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    max-width: 300px;
+  }
   .btn{
     background: var(--bg-elev);
     border:1px solid var(--border);
@@ -369,9 +376,10 @@
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Search topics — e.g. eager loading, PSR-4, rate limiting..." autocomplete="off">
     </div>
-    <button class="btn" id="expandAllBtn">EXPAND ALL</button>
-    <button class="btn" id="collapseAllBtn">COLLAPSE ALL</button>
-    <button class="btn" id="resetBtn" style="color:var(--laravel); border-color:rgba(255,91,69,0.3);">RESET PROGRESS</button>
+    <div class="btn-two">
+      <button class="btn" id="expandAllBtn">EXPAND ALL</button>
+      <button class="btn" id="collapseAllBtn">COLLAPSE ALL</button>
+    </div>
   </div>
   <div class="overall-progress" id="overallProgress"></div>
   <div class="match-count" id="matchCount"></div>
@@ -610,15 +618,6 @@ function updateAllProgress(){
 }
 updateAllProgress();
 
-// RESET PROGRESS
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if(!confirm('Reset all progress? This clears every checked topic.')) return;
-  checkedIds.clear();
-  saveProgress();
-  document.querySelectorAll('.chk.checked').forEach(c => c.classList.remove('checked'));
-  document.querySelectorAll('.node-row.done').forEach(r => r.classList.remove('done'));
-  updateAllProgress();
-});
 
 // EXPAND / COLLAPSE ALL
 document.getElementById('expandAllBtn').addEventListener('click', () => {
